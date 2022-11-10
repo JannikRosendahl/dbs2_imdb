@@ -83,7 +83,7 @@ public class MovieManager {
 	 * @throws Exception
 	 */
 	public void insertUpdateMovie(MovieDTO movieDTO) throws Exception {
-		// TODO
+		// TODO DONE
 		if (movieDTO.getId() == null) {
 			// new movie
 			Movie movie = new Movie(-1, movieDTO.getTitle(), movieDTO.getYear(), movieDTO.getType().charAt(0));

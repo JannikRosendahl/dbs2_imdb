@@ -40,7 +40,6 @@ public class PersonFactory {
         try {
             resultSet.close();
             stmt.close();
-            DBConnection.getConnection().close();
         } catch (SQLException e) {
             throw new IMDBException("An error occurred while trying to close database resources", e.getMessage());
         }
@@ -76,7 +75,6 @@ public class PersonFactory {
         try {
             resultSet.close();
             stmt.close();
-            DBConnection.getConnection().close();
         } catch (SQLException e) {
             throw new IMDBException("An error occurred while trying to close database resources", e.getMessage());
         }

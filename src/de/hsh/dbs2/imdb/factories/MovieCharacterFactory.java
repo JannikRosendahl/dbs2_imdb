@@ -3,6 +3,7 @@ package de.hsh.dbs2.imdb.factories;
 import de.hsh.dbs2.imdb.activerecords.Movie;
 import de.hsh.dbs2.imdb.activerecords.MovieCharacter;
 import de.hsh.dbs2.imdb.util.DBConnection;
+import de.hsh.dbs2.imdb.util.IMDBException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +14,21 @@ import java.util.List;
 import static de.hsh.dbs2.imdb.util.DBConnection.log_stderr;
 
 public class MovieCharacterFactory {
-    public static List<MovieCharacter> getMovieCharactersByMovieId(int id) {
+    public static List<MovieCharacter> getMovieCharactersByMovieId(int id) throws IMDBException {
         List<MovieCharacter> result = new ArrayList<>();
 
+        String sql = "SELECT * FROM " + MovieCharacter.table + " JOIN " + Movie.table + " M on " + MovieCharacter.table + ". " + MovieCharacter.col_movID + " = M." + Movie.col_movieID + " AND M." + Movie.col_movieID + " = ? ORDER BY " + MovieCharacter.col_pos;
+        ResultSet resultSet;
+        PreparedStatement stmt;
         try {
-            String sql = "SELECT * FROM " + MovieCharacter.table + " JOIN " + Movie.table + " M on " + MovieCharacter.table + ". " + MovieCharacter.col_movID + " = M." + Movie.col_movieID + " AND M." + Movie.col_movieID + " = ? ORDER BY " + MovieCharacter.col_pos;
-            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt = DBConnection.getConnection().prepareStatement(sql);
             stmt.setInt(1, id);
-            ResultSet resultSet = stmt.executeQuery();
+            resultSet = stmt.executeQuery();
+        } catch (SQLException e) {
+            throw new IMDBException("An error occurred trying to get the MovieCharacters for Movie with ID " + id, e.getMessage());
+        }
 
+        try {
             while (resultSet.next()) {
                 int movCharID = resultSet.getInt(MovieCharacter.col_movcharID);
                 String character = resultSet.getString(MovieCharacter.col_char);
@@ -32,13 +39,17 @@ public class MovieCharacterFactory {
 
                 result.add(new MovieCharacter(movCharID, character, alias, position, movieID, personID));
             }
-
-            resultSet.close();
-            stmt.close();
         } catch (SQLException e) {
-            log_stderr("MovieCharacterFactory::getMovieCharactersByMovieId", e);
+            throw new IMDBException("An error occurred trying to read data from the ResultSet", e.getMessage());
         }
 
+        try {
+            resultSet.close();
+            stmt.close();
+            DBConnection.getConnection().close();
+        } catch (SQLException e) {
+            throw new IMDBException("An error occurred while trying to close database resources", e.getMessage());
+        }
 
         return result;
     }

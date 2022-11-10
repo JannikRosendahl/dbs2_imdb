@@ -9,17 +9,16 @@ public class DBConnection {
 	private static final boolean debug = true;
 	private static Connection conn = null;
 
-	public static Connection getConnection() {
+	public static Connection getConnection() throws SQLException {
 		try {
 			if (conn == null || conn.isClosed()) {
 				conn = null;
 				conn = DriverManager.getConnection(
 						"jdbc:oracle:thin:@localhost:1521:db01", "6s1-n1s-u1", "__WhoLetMeIn__");
 				conn.setAutoCommit(true);
-				System.out.println("Connect durchgefuehrt ....");
 			}
 		} catch (SQLException e) {
-			log_stderr("DBConnection caught SQLException, trying to continue", e);
+			throw new SQLException("Failed to connect to database: " + e.getMessage());
 		}
 		return conn;
 	}

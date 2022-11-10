@@ -2,6 +2,7 @@ package de.hsh.dbs2.imdb.logic;
 
 import de.hsh.dbs2.imdb.activerecords.Genre;
 import de.hsh.dbs2.imdb.factories.GenreFactory;
+import de.hsh.dbs2.imdb.util.IMDBException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class GenreManager {
 	 * @return Alle Genre-Namen als String-Liste
 	 * @throws Exception
 	 */
-	public List<String> getGenres() {
+	public List<String> getGenres() throws IMDBException {
 		// TODO DONE
 		List<Genre> genreList = GenreFactory.getAllGenres();
 

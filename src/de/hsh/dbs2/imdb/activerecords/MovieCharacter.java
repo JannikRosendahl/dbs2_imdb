@@ -4,6 +4,7 @@ package de.hsh.dbs2.imdb.activerecords;
 import de.hsh.dbs2.imdb.util.DBConnection;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
@@ -34,7 +35,7 @@ public class MovieCharacter{
      * @param personID Spalte: PersonID
 
      */
-    public MovieCharacter(int movCharID, String character, String alias, int position, int movieID, int personID) {
+    public MovieCharacter(int movCharID, String character, String alias, int position, int movieID, int personID) throws SQLException {
         this.setCharacter(character);
         this.setAlias(alias);
         this.setPosition(position);
@@ -131,8 +132,14 @@ public class MovieCharacter{
     }
 
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setPosition(int position) throws SQLException {
+        String sql = "select max(" + col_pos + ") from " + table;
+        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        this.position = rs.getInt(1) + 1;
+        stmt.close();
+        rs.close();
     }
 
 

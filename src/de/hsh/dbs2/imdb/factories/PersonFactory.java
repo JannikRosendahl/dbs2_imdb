@@ -18,7 +18,7 @@ public class PersonFactory {
 
         List<Person> result = new ArrayList<>();
 
-        String sql = "SELECT * FROM " + Person.table + " WHERE UPPER(" + Person.col_name + ") LIKE UPPER(?)";
+        String sql = "SELECT * FROM " + Person.table + " WHERE UPPER(" + Person.col_name + ") LIKE UPPER('%' || ? || '%')";
         PreparedStatement stmt;
         ResultSet resultSet;
         try {

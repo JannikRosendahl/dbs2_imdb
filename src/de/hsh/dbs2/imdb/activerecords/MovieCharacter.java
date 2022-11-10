@@ -48,53 +48,71 @@ public class MovieCharacter{
 
     public void insert() throws SQLException {
         // SQL-Statement:
-        String sql = "INSERT INTO " + table +"("+col_movcharID+","+col_char+","+col_pos+","+col_movID+","+col_persID+","+col_alias+") VALUES (" + seq_movCharID + ".nextval, ?, ?, ?, ?,?)";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setString(1, this.getCharacter());
-        stmt.setInt(2, this.getPosition());
-        stmt.setInt(3, this.getMovieID());
-        System.out.println(this.getMovieID());
-        stmt.setInt(4, this.getPersonID());
-        System.out.println(this.getPersonID());
-        stmt.setString(5, this.getAlias());
+        try {
+            String sql = "INSERT INTO " + table + "(" + col_movcharID + "," + col_char + "," + col_pos + "," + col_movID + "," + col_persID + "," + col_alias + ") VALUES (" + seq_movCharID + ".nextval, ?, ?, ?, ?,?)";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setString(1, this.getCharacter());
+            stmt.setInt(2, this.getPosition());
+            stmt.setInt(3, this.getMovieID());
+            System.out.println(this.getMovieID());
+            stmt.setInt(4, this.getPersonID());
+            System.out.println(this.getPersonID());
+            stmt.setString(5, this.getAlias());
 
-        int rowsInserted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsInserted+" Zeilen hinzugefügt");
-        stmt.close();
+            int rowsInserted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsInserted + " Zeilen hinzugefügt");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim einfügen in MovieCharacter", e.getMessage());
+        }
     }
 
 
 
     public void update() throws SQLException {
         // SQL-Statement:
-        String sql ="UPDATE " + table +" SET " + col_char + " = ?, " + col_pos + " = ?, " + col_movID + " = ?, " + col_persID + " = ?, "
-                + col_alias + " = ? WHERE " + col_movcharID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+        try {
+            String sql = "UPDATE " + table + " SET " + col_char + " = ?, " + col_pos + " = ?, " + col_movID + " = ?, " + col_persID + " = ?, "
+                    + col_alias + " = ? WHERE " + col_movcharID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
 
-        stmt.setString(1, this.getCharacter());
-        stmt.setInt(2, this.getPosition());
-        stmt.setInt(3, this.getMovieID());
-        stmt.setInt(4, this.getPersonID());
-        stmt.setString(5, this.getAlias());
-        stmt.setInt(5, this.getMovCharID());
+            stmt.setString(1, this.getCharacter());
+            stmt.setInt(2, this.getPosition());
+            stmt.setInt(3, this.getMovieID());
+            stmt.setInt(4, this.getPersonID());
+            stmt.setString(5, this.getAlias());
+            stmt.setInt(5, this.getMovCharID());
 
-        // Update:
-        int rowsUpdated = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsUpdated+" Zeilen verändert");
-        stmt.close();
+            // Update:
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsUpdated + " Zeilen verändert");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim updaten in MovieCharacter", e.getMessage());
+        }
     }
 
 
     public void delete() throws SQLException {
         // SQL-Statement
-        String sql ="DELETE FROM " + table+" WHERE " + col_movcharID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setInt(1, this.getMovCharID());
+        try {
+            String sql ="DELETE FROM " + table+" WHERE " + col_movcharID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, this.getMovCharID());
 
-        // Delete:
-        int rowsDeleted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsDeleted+" Zeilen gelöscht");
-        stmt.close();
+            // Delete:
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Es wurden "+rowsDeleted+" Zeilen gelöscht");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim löschen in MovieCharacter", e.getMessage());
+        }
     }
 
 

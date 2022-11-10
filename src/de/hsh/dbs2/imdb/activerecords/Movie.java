@@ -39,52 +39,70 @@ public class Movie {
 
     public void insert() throws SQLException {
         // SQL-Statement:
-        System.out.println(DBConnection.getConnection().toString());
-        String sql = "INSERT INTO " + table+"("+col_movieID+","+col_title+","+col_year+","+col_type+") VALUES ("+seq_movieID+".nextval, ?, ?, ?)";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        System.out.println(DBConnection.getConnection().toString());
-        stmt.setString(1,this.getTitle() );
-        stmt.setInt(2, this.getYear());
-        stmt.setString(3, String.valueOf(this.getType()));
+        try {
+            System.out.println(DBConnection.getConnection().toString());
+            String sql = "INSERT INTO " + table + "(" + col_movieID + "," + col_title + "," + col_year + "," + col_type + ") VALUES (" + seq_movieID + ".nextval, ?, ?, ?)";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            System.out.println(DBConnection.getConnection().toString());
+            stmt.setString(1, this.getTitle());
+            stmt.setInt(2, this.getYear());
+            stmt.setString(3, String.valueOf(this.getType()));
 
-        int rowsInserted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsInserted+" Zeilen hinzugefügt");
+            int rowsInserted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsInserted + " Zeilen hinzugefügt");
 
 
-        //ID:
-        sql ="Select "+seq_movieID+".currval From DUAL";
-        stmt= DBConnection.getConnection().prepareStatement(sql);
-        ResultSet rs=stmt.executeQuery();
-        if(rs.next())this.setMovieID(rs.getInt(1));
-        rs.close();
-        stmt.close();
+            //ID:
+            sql = "Select " + seq_movieID + ".currval From DUAL";
+            stmt = DBConnection.getConnection().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) this.setMovieID(rs.getInt(1));
+            rs.close();
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim einfügen in Movie", e.getMessage());
+        }
     }
 
     public void update() throws SQLException {
         // SQL-Statement:
-        String sql ="UPDATE " + table +" SET " + col_type + " = ?, " + col_year + " = ?, " + col_title + " = ? WHERE " + col_movieID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setString(1, String.valueOf(this.getType()));
-        stmt.setInt(2, this.getYear());
-        stmt.setString(3, this.getTitle());
-        stmt.setInt(4, this.getMovieID());
+        try {
+            String sql = "UPDATE " + table + " SET " + col_type + " = ?, " + col_year + " = ?, " + col_title + " = ? WHERE " + col_movieID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setString(1, String.valueOf(this.getType()));
+            stmt.setInt(2, this.getYear());
+            stmt.setString(3, this.getTitle());
+            stmt.setInt(4, this.getMovieID());
 
-        // Update:
-        int rowsUpdated = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsUpdated+" Zeilen hinzugefügt");
-        stmt.close();
+            // Update:
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsUpdated + " Zeilen hinzugefügt");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim updaten in Movie", e.getMessage());
+        }
     }
 
     public void delete() throws SQLException {
         // SQL-Statement
-        String sql ="DELETE FROM " + table+" WHERE " + col_movieID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setInt(1, this.getMovieID());
+        try {
+            String sql = "DELETE FROM " + table + " WHERE " + col_movieID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, this.getMovieID());
 
-        // Delete:
-        int rowsDeleted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsDeleted+" Zeilen gelöscht");
-        stmt.close();
+            // Delete:
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsDeleted + " Zeilen gelöscht");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim löschen in Movie", e.getMessage());
+        }
     }
 
 

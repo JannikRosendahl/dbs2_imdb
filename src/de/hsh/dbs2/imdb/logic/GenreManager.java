@@ -4,6 +4,7 @@ import de.hsh.dbs2.imdb.activerecords.Genre;
 import de.hsh.dbs2.imdb.factories.GenreFactory;
 import de.hsh.dbs2.imdb.util.IMDBException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class GenreManager {
 	 * @return Alle Genre-Namen als String-Liste
 	 * @throws Exception
 	 */
-	public List<String> getGenres() throws IMDBException {
+	public List<String> getGenres() throws IMDBException, SQLException {
 		// TODO DONE
 		List<Genre> genreList = GenreFactory.getAllGenres();
 

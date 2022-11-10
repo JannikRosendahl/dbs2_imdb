@@ -30,44 +30,62 @@ public class MovieGenre {
 
     public void insert() throws SQLException {
         // SQL-Statement:
-        String sql = "INSERT INTO " + table +" VALUES (?, ?)";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setInt(1, this.getMovieID());
-        stmt.setInt(2, this.getGenreID());
+        try {
+            String sql = "INSERT INTO " + table + " VALUES (?, ?)";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, this.getMovieID());
+            stmt.setInt(2, this.getGenreID());
 
-        // Insert:
-        int rowsInserted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsInserted+" Zeilen hinzugefügt");
-        stmt.close();
+            // Insert:
+            int rowsInserted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsInserted + " Zeilen hinzugefügt");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim einfügen in MovieGenre", e.getMessage());
+        }
     }
 
 
     public void update() throws SQLException {
         // SQL-Statement:
-        String  sql ="UPDATE " + table+" SET " + col_movieID + " = ?, " + col_genreID + " = ? WHERE " + col_movieID + " = ? AND " + col_genreID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setInt(1, this.getMovieID());
-        stmt.setInt(2, this.getGenreID());
-        stmt.setInt(3, this.getMovieID());
-        stmt.setInt(4, this.getGenreID());
+        try {
+            String sql = "UPDATE " + table + " SET " + col_movieID + " = ?, " + col_genreID + " = ? WHERE " + col_movieID + " = ? AND " + col_genreID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, this.getMovieID());
+            stmt.setInt(2, this.getGenreID());
+            stmt.setInt(3, this.getMovieID());
+            stmt.setInt(4, this.getGenreID());
 
-        // Update:
-        int rowsUpdated = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsUpdated+" Zeilen verändert");
-        stmt.close();
+            // Update:
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsUpdated + " Zeilen verändert");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim updaten in MovieGenre", e.getMessage());
+        }
     }
 
     public void delete() throws SQLException {
         // SQL-Statement
-        String sql = "DELETE FROM " + table +" WHERE " + col_movieID + " = ? AND " + col_genreID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql.toString());
-        stmt.setInt(1, this.getMovieID());
-        stmt.setInt(2, this.getGenreID());
+        try {
+            String sql = "DELETE FROM " + table + " WHERE " + col_movieID + " = ? AND " + col_genreID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql.toString());
+            stmt.setInt(1, this.getMovieID());
+            stmt.setInt(2, this.getGenreID());
 
-        // Delete:
-        int rowsDeleted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsDeleted+" Zeilen gelöscht");
-        stmt.close();
+            // Delete:
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsDeleted + " Zeilen gelöscht");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim löschen in MovieGenre", e.getMessage());
+        }
     }
 
 

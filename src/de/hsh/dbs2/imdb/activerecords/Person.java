@@ -37,7 +37,8 @@ public class Person{
 
     public void insert() throws SQLException {
         // SQL-Statement:
-            String sql = "INSERT INTO Person ("+col_personID+","+col_name+","+col_sex+") VALUES(" + seq_personid + ".nextval,?,?)";
+        try {
+            String sql = "INSERT INTO Person (" + col_personID + "," + col_name + "," + col_sex + ") VALUES(" + seq_personid + ".nextval,?,?)";
             PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
             stmt.setString(1, this.getName());
             stmt.setString(2, String.valueOf(this.getSex()));
@@ -47,35 +48,52 @@ public class Person{
             else System.out.println("Es wurde " + rowsInserted + " Zeilen hinzugefügt");
 
             //ID:
-            sql ="Select "+seq_personid+".currval From DUAL";
-            stmt= DBConnection.getConnection().prepareStatement(sql);
-            ResultSet rs=stmt.executeQuery();
-            if(rs.next())this.setPersonID(rs.getInt(1));
+            sql = "Select " + seq_personid + ".currval From DUAL";
+            stmt = DBConnection.getConnection().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) this.setPersonID(rs.getInt(1));
             rs.close();
             stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim einfügen in Person", e.getMessage());
+        }
     }
 
     public void update() throws SQLException {
         // SQL-Statement:
-        String sql="UPDATE Person" + table +"SET " + col_name + " = ?, " + col_sex + " = ? WHERE " + col_personID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setString(1, this.getName());
-        stmt.setString(2, String.valueOf(this.getSex()));
-        stmt.setInt(3, this.getPersonID());
+        try {
+            String sql = "UPDATE Person" + table + "SET " + col_name + " = ?, " + col_sex + " = ? WHERE " + col_personID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setString(1, this.getName());
+            stmt.setString(2, String.valueOf(this.getSex()));
+            stmt.setInt(3, this.getPersonID());
 
-        int rowsUpdated = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsUpdated+" Zeilen verändert");
-        stmt.close();
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsUpdated + " Zeilen verändert");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim updaten in Person", e.getMessage());
+        }
     }
 
     public void delete() throws SQLException {
         // SQL-Statement
-        String sql="DELETE FROM " + table+" WHERE " + col_personID + " = ?";
-        PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
-        stmt.setInt(1, this.getPersonID());
-        int rowsDeleted = stmt.executeUpdate();
-        System.out.println("Es wurden "+rowsDeleted+" Zeilen gelöscht");
-        stmt.close();
+        try {
+            String sql = "DELETE FROM " + table + " WHERE " + col_personID + " = ?";
+            PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, this.getPersonID());
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Es wurden " + rowsDeleted + " Zeilen gelöscht");
+            stmt.close();
+            DBConnection.getConnection().commit();
+        } catch (SQLException e) {
+            DBConnection.getConnection().rollback();
+            throw new SQLException("Fehler beim löschen in Person", e.getMessage());
+        }
     }
 
 

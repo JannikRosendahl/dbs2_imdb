@@ -15,7 +15,7 @@ public class DBConnection {
 				conn = null;
 				conn = DriverManager.getConnection(
 						"jdbc:oracle:thin:@localhost:1521:db01", "6s1-n1s-u1", "__WhoLetMeIn__");
-				conn.setAutoCommit(true);
+				conn.setAutoCommit(false);
 			}
 		} catch (SQLException e) {
 			throw new SQLException("Failed to connect to database: " + e.getMessage());

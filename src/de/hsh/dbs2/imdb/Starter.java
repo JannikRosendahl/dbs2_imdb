@@ -16,6 +16,14 @@ public class Starter {
 	 * @throws Throwable 
 	 */
 	public static void main(String[] args) throws SQLException {
+		if (args.length < 3) {
+			System.out.println("Invoke with args: dbconnectString username password");
+			System.exit(1);
+		}
+		DBConnection.setDbconnectString(args[0]);
+		DBConnection.setUsername(args[1]);
+		DBConnection.setPassword(args[2]);
+
 		try {
 			DBConnection.getConnection();
 

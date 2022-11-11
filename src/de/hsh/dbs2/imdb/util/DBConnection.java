@@ -9,12 +9,32 @@ public class DBConnection {
 	private static final boolean debug = true;
 	private static Connection conn = null;
 
+	private static String dbconnectString = null;
+	private static String username = null;
+	private static String password = null;
+
+	public static void setDbconnectString(String dbconnectString) {
+		DBConnection.dbconnectString = dbconnectString;
+	}
+
+	public static void setUsername(String username) {
+		DBConnection.username = username;
+	}
+
+	public static void setPassword(String password) {
+		DBConnection.password = password;
+	}
+
+
 	public static Connection getConnection() throws SQLException {
+		if (dbconnectString == null || username == null || password == null)
+			throw new SQLException("Failed to connect to database, connection details not set");
+
 		try {
 			if (conn == null || conn.isClosed()) {
 				conn = null;
 				conn = DriverManager.getConnection(
-						"jdbc:oracle:thin:@localhost:1521:db01", "6s1-n1s-u1", "__WhoLetMeIn__");
+						dbconnectString, username, password);
 				conn.setAutoCommit(false);
 			}
 		} catch (SQLException e) {
